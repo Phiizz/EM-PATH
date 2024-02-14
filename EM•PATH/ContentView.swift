@@ -6,8 +6,49 @@
 //
 
 import SwiftUI
+import UIKit
+
+extension UIColor {
+    func darken(by percentage: CGFloat) -> UIColor {
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return UIColor(red: max(red - percentage/100, 0.0),
+                       green: max(green - percentage/100, 0.0),
+                       blue: max(blue - percentage/100, 0.0),
+                       alpha: alpha)
+    }
+}
+
+extension UIColor {
+    static let backgroundColour = UIColor(red: 25/255.0, green: 55/255.0, blue: 69/255.0, alpha: 1.0)
+    static let launchColour = UIColor(red: 7/255.0, green: 7/255.0, blue: 36/255.0, alpha: 1.0)
+    static let notificationColour = UIColor(red: 145/255.0, green: 145/255.0, blue: 145/255.0, alpha: 1).darken(by: 35)
+}
+
+extension Color {
+    static let backgroundColour = Color(UIColor.backgroundColour)
+    static let launchColour = Color(UIColor.launchColour)
+    static let notificationColour = Color(UIColor.notificationColour)
+}
+
+struct LaunchingView: View {
+    var body: some View {
+        ZStack {
+            Color.launchColour
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+            Image("LaunchAppIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200, height: 200)
+                .background(Color.launchColour)
+                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+        }
+    }
+}
 
 struct ContentView: View {
+    @State private var showLaunchScreen = true
     @State private var isBlueScreen = false
     @State private var displayNotification = false
     @State private var navigateToOffer = false
@@ -16,67 +57,104 @@ struct ContentView: View {
         NavigationView {
             GeometryReader { geometry in
                 ZStack {
-                    VStack (spacing: 0){
-                        Text("Congratulations!\nYour new profile is now live")
-                            .font(.system(size: 28, weight: .bold))
-                            .padding(.top, 70)
-                            .foregroundStyle(Color.white)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 160)
-                            .background(Color.black)
-                        
-                        Color.black
-                            .frame(height: 30.0)
-                        
-                        Image("profilePicture")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 270, height: 300)
-                            .clipShape(Ellipse())
-                            .overlay(Ellipse().stroke(Color.white, lineWidth: 10))
+                    LinearGradient(gradient: Gradient(colors: [Color(red: 0, green: 0.541, blue: 0.706), Color(red: 0, green: 0.541, blue: 0.706)]), startPoint: /*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/, endPoint: /*@START_MENU_TOKEN@*/.trailing/*@END_MENU_TOKEN@*/)
+                        .frame(width: 390, height: 227)
+                        .position(x: 195, y: 277.4)
+                    
+                    ScrollView {
+                        VStack (spacing: 5){
+                            
+                            VStack(spacing: 8) {
+                                Text("CONGRATULATIONS")
+                                    .font(.custom("Arial-BoldMT", size: 18))
+                                    .foregroundColor(.white)
+                                    .frame(width: 196.66, height: 21)
+                                    .padding(.top, 70.13)
+                                
+                                Text("YOUR NEW PROFILE IS NOW LIVE!")
+                                    .font(.custom("ArialMT", size: 16))
+                                    .foregroundColor(Color(red: 0.561, green: 0.604, blue: 0.682))
+                                    .frame(width: 280, height: 21)
+                            }
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
-                            .background(Color.black)
-                        
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Josie, 23")
-                                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                                .bold()
-                                .padding(.top, 20)
+                            .background(Color.backgroundColour)
+                            .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                             
-                            HStack {
-                                Image(systemName: "person.fill")
-                                    .imageScale(.large)
-                                    .font(.system(size: 20))
-                                Text("Woman")
+                            ZStack {
+                                Image("profileBorder")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                                    .frame(width: 393, height: 200)
+                                    .padding(.bottom, 250)
+                                
+                                Image("profilePicture")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 165, height: 164)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color(red: 0, green: 0.541, blue: 0.706), lineWidth: 2))
+                                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
+                                    .offset(x: -2)
+                                    .background(Color.clear)
+                            }
+                            .padding(.top, 40)
+                            .padding(.bottom, -120)
+                            
+                            Text("Josie, 24")
+                                .font(.custom("Arial-Bold", size: 18))
+                                .foregroundStyle(Color.white)
+                            
+                            Text("Barista")
+                                .font(.custom("Arial-Regular", size: 13))
+                                .foregroundStyle(Color(red: 0.561, green: 0.604, blue: 0.682))
+                                .lineSpacing(-2.62)
+                            
+                            HStack(spacing: 2) {
+                                Image(systemName: "mappin.and.ellipse")
+                                    .foregroundColor(.green)
+                                Text("London")
+                                    .font(.custom("Arial-Regular", size: 12))
+                                    .foregroundStyle(Color(red: 0.561, green: 0.604, blue: 0.682))
                             }
                             
-                            HStack {
-                                Image(systemName: "house.fill")
-                                    .imageScale(.large)
-                                    .font(.system(size: 16))
-                                Text("Lives in London")
-                            }
+                            Text("Uni student currently working, studying, and working some more. Looking for a way to cover care bills for my mum. Currently a barista at Luna Brew Coffee, so hit me up if you ever want a proper coffee ☕🌔. Vegan (cows are so cute! 🐮🌱). Don't often have time for hobbies but when I do I love to read and explore local cafes. I like to keep fit by hiking (when I can get out of London) and love a good boogie too ✌")
+                                .font(.custom("Arial-Regular", size: 13))
+                                .foregroundStyle(Color.white)
+                                .frame(width: 342, height: 134)
+                                .multilineTextAlignment(.center)
                             
-                            HStack {
-                                Image(systemName: "briefcase.fill")
-                                    .imageScale(.large)
-                                    .font(.system(size: 16))
-                                Text("Barista @ Starbuckz Coffee")
-                            }
+                            Spacer()
+                                .frame(height: 20)
                             
+                            Rectangle()
+                                .fill(Color.white.opacity(0.2))
+                                .frame(width: 342, height: 0.5)
                             
-                            Text("\nHi I'm Josie! \n\nLorem ipsum dolor sit amet. Eos similique reiciendis ab maxime dicta non quis eius et voluptate voluptas aut voluptates voluptatum aut enim consequatur. Qui nulla molestiae ut")
-                                .font(.subheadline)
-                                .mask {
-                                    LinearGradient(gradient: Gradient(colors: [.black.opacity(1.0), .black.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
-                                }
+                            Spacer()
+                                .frame(height: 180)
+                            
+                            Text("No offers just yet")
+                                .font(.custom("Arial-Regular", size: 22))
+                                .foregroundStyle(Color.white.opacity(0.6))
+                                .frame(width: 170, height: 15)
+                                .lineSpacing(-6.33)
+                            
+                            Spacer()
+                                .frame(height: 180)
                         }
-                        .padding([.leading, .trailing], 40)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 400)
-                        .foregroundStyle(Color.white)
-                        .background(Color.black)
                     }
+                    
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                    .background(Color.backgroundColour)
+                    
+                    .fullScreenCover(isPresented: $showLaunchScreen, content: LaunchingView.init)
+                    .onAppear{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { 
+                            self.showLaunchScreen = false
+                        }
+                    }
                     
                     if isBlueScreen {
                         Rectangle()
@@ -149,36 +227,41 @@ struct NotificationView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 50, height: 50)
-                .cornerRadius(10)
+                .cornerRadius(11)
                 .padding()
             
             VStack(alignment: .leading) {
                 Text("EM•PATH")
-                    .font(.headline)
+                    .font(.custom("DMSans-Regular", size: 15))
                     .foregroundColor(.white)
-                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                    .frame(maxWidth: 250, alignment: .leading)
+                    .kerning(-0.4)
+                    .lineSpacing(1)
                 
                 if notificationType == .moneyReceived {
                     Text("£2500 has been added to your account")
-                        .font(.subheadline)
+                        .font(.custom("DMSans-Regular", size: 14))
                         .foregroundColor(.white)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                        .frame(width: 250, alignment: .leading)
+                        .kerning(-0.4)
+                        .lineSpacing(2)
+                        .background(Color.clear)
                 } else {
                     Text("You have a new offer from Lawrence!")
-                        .font(.subheadline)
+                        .font(.custom("DMSans-Regular", size: 14))
                         .foregroundColor(.white)
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+                        .frame(width: 250, alignment: .leading)
+                        .kerning(-0.4)
+                        .lineSpacing(2)
+                        .background(Color.clear)
                 }
             }
             
             Spacer()
         }
-        .padding([.top, .bottom, .leading, .trailing])
-        .background(Color(.darkGray).opacity(1))
-        .cornerRadius(10)
-        .padding()
-        .frame(maxWidth: 400)
-        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+        .background(Color.notificationColour)
+        .cornerRadius(16)
+        .frame(width: 380, height: 66)
     }
 }
 
@@ -202,143 +285,164 @@ struct OfferPage: View {
                 VStack (spacing: 0){
                     Color.clear.frame(height: 0).id(scrollID)
                     
-                    Color.black
-                        .frame(height: 200.0)
+                    ZStack {
+                        Image("offerProfileBorder")
+                            .resizable()
+                            .scaledToFill()
+                            .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                            .frame(width: 393, height: 200)
+                            .padding(.bottom, 250)
+                        
+                        Image("offerProfilePicture")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 165, height: 164)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.green, lineWidth: 2))
+                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
+                            .offset(x: -2)
+                            .background(Color.clear)
+                    }
+                    .padding(.top, 40)
+                    .padding(.bottom, -120)
                 
-                    Image("offerProfilePicture")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 270, height: 300)
-                        .clipShape(Ellipse())
-                        .overlay(Ellipse().stroke(Color.white, lineWidth: 10))
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
-                        .background(Color.black)
-                        .padding(.bottom, 20)
-                
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Lawrence, 27")
-                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                            .bold()
-                            .padding(.top, 40)
-                        
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .imageScale(.large)
-                                .font(.system(size: 20))
-                            Text("Man")
-                        }
-                        
-                        HStack {
-                            Image(systemName: "house.fill")
-                                .imageScale(.large)
-                                .font(.system(size: 16))
-                            Text("Lives in London")
-                        }
-                        
-                        HStack {
-                            Image(systemName: "briefcase.fill")
-                                .imageScale(.large)
-                                .font(.system(size: 16))
-                            Text("Philanthropist")
-                        }
-                        
-                        Color.black
-                            .frame(height: 20.0)
-                        
-                        if notificationType == .newOffer && isSubmitted {
-                            Text("New Offer\n£\(cashAmount) - \(timeAmount) minutes")
-                                .font(.system(size: 28, weight: .bold))
-                                .padding(.top, 70)
-                                .foregroundStyle(Color.white)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 160)
-                                .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                                .background(Color.black)
-                        } else {
-                            Text("New Offer\n£2500 - 15 minutes")
-                                .font(.system(size: 28, weight: .bold))
-                                .padding(.top, 70)
-                                .foregroundStyle(Color.white)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 160)
-                                .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                                .background(Color.black)
-                        }
-                        
-                        Text("I understand I am signing away control of my body for the duration of my contract.")
-                            .font(.subheadline)
+                    Text("LAWRENCE, 26")
+                        .font(.custom("Arial-Bold", size: 22))
+                        .foregroundStyle(Color.white)
+                        .frame(width: 161, height: 21)
+                        .background(Color.clear)
+                    
+                    Spacer()
+                        .frame(height: 10)
+                    
+                    Text("Chief Ethics Officer")
+                        .font(.custom("Arial-Regular", size: 13))
+                        .foregroundStyle(Color(red: 0.561, green: 0.604, blue: 0.682))
+                        .frame(width: 161, height: 9)
+                        .background(Color.clear)
+                    
+                    Spacer()
+                        .frame(height: 10)
+                    
+                    HStack(spacing: 2) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .foregroundColor(.green)
+                        Text("London")
+                            .font(.custom("Arial-Regular", size: 12))
+                            .foregroundStyle(Color(red: 0.561, green: 0.604, blue: 0.682))
+                    }
+                    
+                    Spacer()
+                        .frame(height: 19)
+                    
+                    if notificationType == .newOffer && isSubmitted {
+                        Text("£\(cashAmount)    \(timeAmount) mins")
+                            .font(.custom("Arial-Bold", size: 22))
+                            .foregroundStyle(Color.white)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 160)
                             .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                            .multilineTextAlignment(.leading)
+                            .background(Color.backgroundColour)
+                    } else {
+                        Text("£2,500.00    15 mins")
+                            .font(.custom("Arial-Bold", size: 22))
+                            .foregroundStyle(Color.white)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: 160)
+                            .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                            .background(Color.backgroundColour)
+                    }
+                    
+                    Spacer()
+                        .frame(height: 19)
+                    
+                    Text("I understand I am signing away control of my body for the duration of my contract.")
+                        .font(.custom("Arial Italic", size: 14))
+                        .foregroundStyle(Color.white)
+                        .frame(width: 272, height: 50)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                    
+                    HStack(spacing: 10) {
+                        Button("Decline Offer") {
+                        }
+                            .font(.custom("Arial-Regular", size: 12))
+                            .foregroundStyle(Color.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.backgroundColour)
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
                         
-                        Color.black
-                            .frame(height: 15.0)
-                        
-                        Button("Accept") {
+                        Button("Accept Offer") {
                             showLoadingView = true
                         }
-                            .font(.headline)
+                            .font(.custom("Arial-Regular", size: 12))
                             .foregroundStyle(Color.white)
                             .padding()
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                             .background(Color.blue)
                             .cornerRadius(10)
-                            .padding()
-                            .background(Color.black)
-                        
-                        Color.black
-                            .frame(height: 800.0)
-                        
-                        Text("Push Notification Setup")
-                            .font(.subheadline)
-                        Form {
-                            TextField("Enter Date", text: $date)
-                                .foregroundStyle(Color.black)
-                                .focused($focusedField, equals: .date)
-                            TextField("Enter Time", text: $time)
-                                .foregroundStyle(Color.black)
-                                .focused($focusedField, equals: .time)
-                            
-                            Picker("Notification Type", selection: $notificationType) {
-                                Text("Money Received").tag(NotificationType.moneyReceived)
-                                Text("New Offer").tag(NotificationType.newOffer)
-                            }.pickerStyle(SegmentedPickerStyle())
-                            
-                            TextField("Cash Amount", text: $cashAmount)
-                                .foregroundStyle(Color.black)
-                                .focused($focusedField, equals: .cashAmount)
-                            
-                            if notificationType == .newOffer {
-                                TextField("Time Amount", text: $timeAmount)
-                                    .foregroundStyle(Color.black)
-                                    .focused($focusedField, equals: .timeAmount)
-                            }
-                            
-                            Button("Submit") {
-                                isSubmitted = true
-                                focusedField = nil
-                                withAnimation {
-                                    scrollProxy.scrollTo(scrollID, anchor: .top)
-                                }
-                                pushNotificationDataSubmit = true
-                            }
+                    }
+                    .padding()
+                    .background(Color.backgroundColour)
+                    
+                    Color.backgroundColour
+                        .frame(height: 800.0)
+                    
+                    Text("Push Notification Setup")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.white)
+                    Form 
+                    {
+                        TextField("Enter Date", text: $date)
                             .foregroundStyle(Color.black)
-                            .font(.headline)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .padding()
-                            
+                            .focused($focusedField, equals: .date)
+                        TextField("Enter Time", text: $time)
+                            .foregroundStyle(Color.black)
+                            .focused($focusedField, equals: .time)
+                        
+                        Picker("Notification Type", selection: $notificationType) {
+                            Text("Money Received").tag(NotificationType.moneyReceived)
+                            Text("New Offer").tag(NotificationType.newOffer)
+                        }.pickerStyle(SegmentedPickerStyle())
+                        
+                        TextField("Cash Amount", text: $cashAmount)
+                            .foregroundStyle(Color.black)
+                            .focused($focusedField, equals: .cashAmount)
+                        
+                        if notificationType == .newOffer {
+                            TextField("Time Amount", text: $timeAmount)
+                                .foregroundStyle(Color.black)
+                                .focused($focusedField, equals: .timeAmount)
                         }
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, minHeight: 300)
-                        .background(Color.black)
+                        
+                        Button("Submit") {
+                            isSubmitted = true
+                            focusedField = nil
+                            withAnimation {
+                                scrollProxy.scrollTo(scrollID, anchor: .top)
+                            }
+                            pushNotificationDataSubmit = true
+                        }
+                        .foregroundStyle(Color.black)
+                        .font(.headline)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .padding()
+                        
                     }
                     .padding([.leading, .trailing], 40)
-                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
+                    .frame(width: 380, height: 400)
                     .foregroundStyle(Color.white)
-                    .background(Color.black)
+                    .background(Color.backgroundColour)
                 }
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
-                .background(Color.black)
+                .background(Color.backgroundColour)
                 
                 .sheet(isPresented: $showLoadingView) {
                     LoadingView()
@@ -452,30 +556,53 @@ struct LoadingView: View {
     var body: some View {
         VStack {
             ZStack {
+                Image("jobBackground")
+                    .resizable()
+                    .aspectRatio(contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
+                    .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                
                 if showCountDown {
-                    Text("OPT OUT WINDOW\nNOW COUNTING DOWN")
+                    Text("OPT-OUT WINDOW ENDS IN 15:00")
                         .foregroundStyle(Color.white)
                         .transition(.opacity)
-                        .font(.system(size: 26, weight: .bold))
-                        .offset(y: -250)
+                        .font(.custom("Arial-Bold", size: 21))
+                        .offset(y: -150)
                         .multilineTextAlignment(.center)
                         .opacity(countdownTime <= ((15 * 60) - 30) ? 0 : 1)
+                    
+                    Circle()
+                        .trim(from: 0, to: 1)
+                        .stroke(
+                            LinearGradient(gradient: Gradient(colors: [Color.green, Color.blue]), startPoint: .top, endPoint: .bottom),
+                            style: StrokeStyle(lineWidth: 20, lineCap: .round)
+                        )
+                        .rotationEffect(Angle(degrees: -90))
+                        .frame(width: 221, height: 221)
+                        .animation(.linear(duration: 1), value: countdownTime)
                 }
-                Circle()
-                    .stroke(lineWidth: 4)
-                    .foregroundColor(.cyan)
-                    .frame(width: 300, height: 300)
                 
                 if showLoadingComponents {
-                    Rectangle()
-                        .frame(width: loadingProgress, height: 5)
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .offset(x: loadingProgress / 2 - 100, y: 10)
                     
-                    Text("Initializing...")
-                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                    Circle()
+                        .stroke(Color(red: 0.063, green: 0.58, blue: 0.278), lineWidth: 5)
+                        .frame(width: 221, height: 221)
+                    
+                    Rectangle()
+                        .frame(width: 200, height: 12)
+                        .foregroundColor(Color.blue)
+                        .clipShape(Capsule())
+                        .offset(y: 13)
+                    
+                    Rectangle()
+                        .frame(width: loadingProgress, height: 12)
+                        .foregroundColor(Color(red: 0.063, green: 0.58, blue: 0.278))
+                        .clipShape(Capsule())
+                        .offset(x: loadingProgress / 2 - 100, y: 13)
+                    
+                    Text("INITIALISING")
+                        .font(.custom("Arial-Bold", size: 21))
                         .foregroundStyle(Color.white)
-                        .offset(y: -10)
+                        .padding(.bottom, 10)
                 }
                 
                 if showCountDown {
@@ -487,28 +614,32 @@ struct LoadingView: View {
                             countdownTime = 30
                         }
                     
-                    Text("EM•PATH IMPLANT")
+                    Text("EM•PATH")
                         .foregroundStyle(Color.white)
                         .transition(.opacity)
-                        .font(.system(size: 18, weight: .bold))
-                        .offset(y: 200)
+                        .font(.custom("Arial-Bold", size: 21))
+                        .offset(y: 140)
                     
                     if countdownTime != 0 {
-                        Text("ACTIVE")
-                            .foregroundStyle(Color.cyan)
+                        Text("Implant Active")
+                            .foregroundStyle(Color.white)
                             .transition(.opacity)
-                            .font(.system(size: 36, weight: .bold))
-                            .offset(y: 220)
-                            .frame(width: 200)
-                            .scaledToFit()
+                            .font(.custom("Arial-Regular", size: 15))
+                            .frame(width: 130)
+                            .padding()
+                            .background(Color(red: 0.063, green: 0.58, blue: 0.278))
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
+                            .offset(y: 180)
                     } else {
-                        Text("DISABLED")
-                            .foregroundStyle(Color.red)
+                        Text("Implant Inactive")
+                            .foregroundStyle(Color.white)
                             .transition(.opacity)
-                            .font(.system(size: 36, weight: .bold))
-                            .offset(y: 220)
-                            .frame(width: 200)
-                            .scaledToFit()
+                            .font(.custom("Arial-Regular", size: 15))
+                            .frame(width: 130)
+                            .padding()
+                            .background(Color.blue)
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
+                            .offset(y: 180)
                     }
                     
                 }
@@ -535,7 +666,7 @@ struct LoadingView: View {
             }
         }
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
-        .background(Color.black)
+        .background(Color.backgroundColour)
         .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
     }
     
