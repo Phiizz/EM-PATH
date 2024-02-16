@@ -611,7 +611,7 @@ struct LoadingView: View {
                         .transition(.opacity)
                         .font(.system(size: 58, weight: .bold))
                         .onTapGesture(count: 2) {
-                            countdownTime = 30
+                            countdownTime = 15
                         }
                     
                     Text("EM•PATH")
